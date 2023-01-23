@@ -4,7 +4,7 @@ services:
     network_mode: host
     ipc: host
     devices:
-      - ${MANIPULATOR_SERIAL:-/dev/ttyUSB0}:/dev/manipulator
+      - ${MANIPULATOR_SERIAL:?err}:/dev/manipulator
     environment:
       - DDS_CONFIG
       - RMW_IMPLEMENTATION

@@ -1,0 +1,26 @@
+services:
+  rosbot-xl:
+    image: husarion/rosbot-xl:humble-manipulation
+    network_mode: host
+    ipc: host
+    devices:
+      - ${MANIPULATOR_SERIAL:?err}:/dev/manipulator
+    volumes: 
+      - ./config/joy_servo.yaml:/joy_servo.yaml
+    environment:
+      - DDS_CONFIG
+      - RMW_IMPLEMENTATION
+    command: >
+      ros2 launch rosbot_xl_bringup bringup.launch.py mecanum:=${MECANUM:-True}
+        manipulator_usb_port:=/dev/manipulator
+        manipulator_baud_rate:=${MANIPULATOR_BAUDRATE:-115200}
+        joy_servo_params_file:=/joy_servo.yaml
+
+  microros:
+    image: husarion/micro-ros-agent:humble-22-12-07
+    network_mode: host
+    ipc: host
+    environment:
+      - DDS_CONFIG
+      - RMW_IMPLEMENTATION=rmw_fastrtps_cpp
+    command: ros2 run micro_ros_agent micro_ros_agent udp4 --port 8888

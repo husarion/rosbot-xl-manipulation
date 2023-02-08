@@ -1,6 +1,6 @@
 # rosbot-xl-manipulation
 
-Example integration of ROSbot XL with [OpenManipulatorX](https://emanual.robotis.com/docs/en/platform/openmanipulator_x/overview/), with a [MoveIt2](https://moveit.picknik.ai/humble/index.html) along servo mode configuration, which allows to control manipulator with joystick.
+Example integration of ROSbot XL with [OpenManipulatorX](https://emanual.robotis.com/docs/en/platform/openmanipulator_x/overview/), with a [MoveIt2](https://moveit.picknik.ai/humble/index.html) along servo mode configuration, which allows to control manipulator with a joystick.
 
 ## Quick Start (real robot)
 
@@ -12,7 +12,7 @@ Clone this repository:
 git clone https://github.com/husarion/rosbot-xl-manipulation.git
 ```
 
-**Connect a gamepad to USB port of your PC/laptop** (necessary for controlling manipulator)
+**Connect a gamepad to USB port of your PC/laptop**
 
 Check your configs in `.env` file:
 
@@ -47,8 +47,6 @@ xhost +local:docker && \
 docker compose -f compose.pc.yaml up
 ```
 
-Then you will be able to control the ROSbot and manipulator using gamepad (for specific command description refer to Gamepad controls section). It is also possible to control manipulator using MoveIt MotionPlanning plugin in the RViz. 
-
 ## ROSbot
 
 > **Firmware version**
@@ -69,30 +67,34 @@ In the ROSbot's terminal execute (in `/home/husarion/rosbot-xl-manipulation` dir
 docker compose -f compose.rosbot.yaml up
 ```
 
-## Gamepad controls
+## Manipulator control
 
-Please note that controls can be changed by editing joy_servo.yaml in the config directory.
+> Please note that manipulator controls can be changed by editing `joy_servo.yaml` in the config directory. It is also possible to configure ROSbot XL control (`joy2twist.yaml` config).
 
-`RB` - dead man's switch
-`Start` - move manipulator to Home position
-`Left Joy` - moving end effector in X/Y directions
-`Right Joy` - moving end effector in Z direction (Up/Down) and changing Pitch angle (Left/Right)
-`Left/Right arrow` - moving joint1 of manipulator
-`Up/Down arrow` - moving joint2 of manipulator
-`X/B button` - moving joint3 of manipulator
-`Y/A` - moving joint4 of manipulator
-`RB` - close gripper 
-`LB` - close gripper 
+First make sure that joystick is in the DirectInput Mode (switch in front with letters D and X, select D).
 
-<!-- TODO: check which one closes gripper and which one opens -->
+Controls:
+ * `RB` - manipulator dead man's switch \
+ * `LB` - ROSbot control dead man's switch (with this button pressed you can control ROSbot XL, for specific command please refer to documentation of [joy2twist node](https://github.com/husarion/joy2twist)) \
+ * `Start` - move manipulator to Home position \
+ * `Left Joy` - moving end effector in X/Y directions \
+ * `Right Joy` - moving end effector in Z direction (Up/Down) and changing Pitch angle (Left/Right) \
+ * `Left/Right arrow` - moving joint1 of manipulator \
+ * `Up/Down arrow` - moving joint2 of manipulator \
+ * `X/B button` - moving joint3 of manipulator \
+ * `Y/A` - moving joint4 of manipulator \
+ * `RT` - close gripper \
+ * `LT` - open gripper
 
 If manipulator stops moving it could be that it is near collision (may not appear so, because collision bounds are larger than robot) or singularity. If that happens the easiest option is to press `Start` so that manipulator will return to Home position.
+
+Apart from joystick, it is also possible to control manipulator using MoveIt MotionPlanning plugin in the RViz. 
 
 Torque of the manipulator can be turned off by executing following service call in one of the containers:
 ```
 ros2 service call /controller_manager/set_hardware_component_state controller_manager_msgs/srv/SetHardwareComponentState "{name: 'manipulator', target_state: {id: 0, label: 'inactive'}}"
 ```
-
+Later it can be turned on likewise, only labal should be changed to `active`.
 
 ## Quick Start (Gazebo simulation)
 
@@ -108,3 +110,6 @@ Start the containers in a new terminal:
 xhost +local:docker && \
 docker compose -f compose.sim.nvidia.yaml up
 ```
+
+> Collision for manipulator is disabled in Gazebo Ignition - there aren't any collision models available for OpenManipulatorX, in the official configuration visual meshes are used also for collision, which causes large drop in real time factor of the simulation.
+> In simulation servo position control is used instead of velocity (due to bug, which causes manipulator to fall down just after start). As a result homing manipulator from joy_servo isn't supported.

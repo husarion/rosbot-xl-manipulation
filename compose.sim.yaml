@@ -1,11 +1,11 @@
 # Quick Start
 # $ xhost local:root
-# $ docker compose -f compose.simulation.yaml up
+# $ docker compose -f compose.sim.yaml up
 
 
 services:
   rosbot-xl:
-    image: husarion/rosbot-xl:humble-manipulation-simulation
+    image: husarion/rosbot-xl-manipulation-gazebo:humble-manipulation-simulation
     container_name: rosbot_xl_manipulation_simulation
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
@@ -16,10 +16,10 @@ services:
       - RMW_IMPLEMENTATION=${RMW_IMPLEMENTATION:-rmw_cyclonedds_cpp}
       - DISPLAY=${DISPLAY}
       - LIBGL_ALWAYS_SOFTWARE=1
-    command: ros2 launch rosbot_xl_gazebo simulation.launch.py mecanum:=${MECANUM:-True}
+    command: ros2 launch rosbot_xl_manipulation_gazebo simulation.launch.py mecanum:=${MECANUM:-True}
   
   joy2twist:
-    image: husarion/joy2twist:humble-22-12-07
+    image: husarion/joy2twist:humble-1.0.0-20230204-stable
     network_mode: host
     ipc: host
     devices:

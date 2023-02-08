@@ -1,10 +1,10 @@
 # Quick Start
 # $ xhost local:root
-# $ docker compose -f compose.simulation.nvidia.yaml up
+# $ docker compose -f compose.sim.nvidia.yaml up
 
 services:
   rosbot-xl:
-    image: husarion/rosbot-xl:humble-manipulation-simulation
+    image: husarion/rosbot-xl-manipulation-gazebo:humble-open_manipulator_x
     container_name: rosbot_xl_manipulation_simulation
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix
@@ -17,10 +17,10 @@ services:
       - NVIDIA_DRIVER_CAPABILITIES=all
       - ROS_DOMAIN_ID=${ROS_DOMAIN_ID:-0}
       - RMW_IMPLEMENTATION=${RMW_IMPLEMENTATION:-rmw_cyclonedds_cpp}
-    command: ros2 launch rosbot_xl_gazebo simulation.launch.py mecanum:=${MECANUM:-True}
+    command: ros2 launch rosbot_xl_manipulation_gazebo simulation.launch.py mecanum:=${MECANUM:-True}
   
   joy2twist:
-    image: husarion/joy2twist:humble-22-12-07
+    image: husarion/joy2twist:humble-1.0.0-20230204-stable
     network_mode: host
     ipc: host
     devices:

@@ -1,7 +1,7 @@
 services:
   rviz:
     # Launching rviz with moveit2 requires all the configs, using manipulation simulation image is easiest option
-    image: husarion/rosbot-xl:humble-manipulation-simulation
+    image: husarion/rosbot-xl-manipulation-gazebo:humble-open_manipulator_x
     container_name: rviz
     network_mode: host
     ipc: host
@@ -16,7 +16,7 @@ services:
     command: ros2 launch rosbot_xl_manipulation_moveit rviz.launch.py
 
   joy2twist:
-    image: husarion/joy2twist:humble-22-12-07
+    image: husarion/joy2twist:humble-1.0.0-20230204-stable
     network_mode: host
     ipc: host
     devices:

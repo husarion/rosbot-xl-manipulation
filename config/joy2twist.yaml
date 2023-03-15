@@ -6,9 +6,9 @@
       slow: 0.2
 
     angular_velocity_factor:
-      fast: 1.0
-      regular: 0.5
-      slow: 0.2
+      fast: 1.5
+      regular: 0.8
+      slow: 0.4
 
     # This button mapping should be adjusted to the specific controller
     # The following map is suited for Logitech F710

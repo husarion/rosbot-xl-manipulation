@@ -1,6 +1,6 @@
 # rosbot-xl-manipulation
 
-Example integration of ROSbot XL with [OpenManipulatorX](https://emanual.robotis.com/docs/en/platform/openmanipulator_x/overview/), with a [MoveIt2](https://moveit.picknik.ai/humble/index.html) along servo mode configuration, which allows to control manipulator with a joystick.
+In this project you can find an example integration of ROSbot XL with [OpenManipulatorX](https://emanual.robotis.com/docs/en/platform/openmanipulator_x/overview/) based on [MoveIt2](https://moveit.picknik.ai/humble/index.html). It includes [servo mode](https://moveit.picknik.ai/humble/doc/examples/realtime_servo/realtime_servo_tutorial.html) configuration, which allows controlling manipulator with a gamepad.
 
 ## Quick Start (real robot)
 
@@ -12,12 +12,12 @@ Clone this repository:
 git clone https://github.com/husarion/rosbot-xl-manipulation.git
 ```
 
-**Connect a gamepad to USB port of your PC/laptop**
+**Connect a gamepad to the USB port of your PC/laptop**
 
-Check your configs in `.env` file:
+Check your configs in the `.env` file:
 
 ```
-MANIPULATOR_SERIAL=/dev/ttyUSB0
+MANIPULATOR_SERIAL=/dev/ttyMANIPULATOR
 MANIPULATOR_BAUDRATE=1000000
 
 DDS_CONFIG=DEFAULT
@@ -30,9 +30,9 @@ MECANUM=False
 ```
 
 **Notes:**
-- Usually MANIPULATOR is listed under `/dev/ttyUSB0`, but verify it with `ls -la /dev/ttyUSB*` command.
-- Set `MANIPULATOR_BAUDRATE` according to baudrate that is set in servos (by default this value should be set to 1000000, you can check/change this value in the [Dynamixel Wizard 2.0](https://emanual.robotis.com/docs/en/software/dynamixel/dynamixel_wizard2/))
-- With `DDS_CONFIG=DEFAULT` your robot and laptop need to be in the same LAN network. If you want to use this demo over the Internet, set `DDS_CONFIG=HUSARNET_SIMPLE_AUTO` and [enable Husarnet on ROSbot XL and you PC](https://husarion.com/manuals/rosbot/remote-access/).
+- Make sure to add the following line: `ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6014", SYMLINK+="ttyMANIPULATOR"` to your robot's udev rules, so that manipulator will be available under `/dev/ttyMANIPULATOR`
+- Set `MANIPULATOR_BAUDRATE` according to the baud rate that is set in servos (by default this value should be set to 1000000, you can check/change this value in the [Dynamixel Wizard 2.0](https://emanual.robotis.com/docs/en/software/dynamixel/dynamixel_wizard2/))
+- With `DDS_CONFIG=DEFAULT` your robot and laptop need to be in the same LAN network. If you want to use this demo over the Internet, set `DDS_CONFIG=HUSARNET_SIMPLE_AUTO` and [enable Husarnet on ROSbot XL and your PC](https://husarion.com/manuals/rosbot/remote-access/).
 
 Sync a workspace with ROSbot XL:
 
@@ -40,7 +40,7 @@ Sync a workspace with ROSbot XL:
 ./sync_with_rosbot.sh <ROSbot_XL_IP>
 ```
 
-Open new terminal on PC and run Rviz and gamepad: 
+Open a new terminal on the PC and run Rviz and gamepad: 
 
 ```bash
 xhost +local:docker && \
@@ -51,7 +51,7 @@ docker compose -f compose.pc.yaml up
 
 > **Firmware version**
 >
-> Before running the project, make sure you have the correct version of a firmware flashed on your robot.
+> Before running the project, make sure you have the correct version of firmware flashed on your robot.
 >
 > Firmware flashing command (run in the ROSbot's terminal)
 >
@@ -60,6 +60,11 @@ docker compose -f compose.pc.yaml up
 > husarion/rosbot-xl-manipulation:humble \
 > flash-firmware.py -p /dev/ttyUSB0
 > ```
+
+> **Warning**
+> 
+> After running the following command servos' torque will be turned on, so first lift the manipulator, so it won't be in collision with your robot.
+
 
 In the ROSbot's terminal execute (in `/home/husarion/rosbot-xl-manipulation` directory):
 
@@ -71,30 +76,33 @@ docker compose -f compose.rosbot.yaml up
 
 > Please note that manipulator controls can be changed by editing `joy_servo.yaml` in the config directory. It is also possible to configure ROSbot XL control (`joy2twist.yaml` config).
 
-First make sure that joystick is in the DirectInput Mode (switch in front with letters D and X, select D).
+First make sure that gamepad is in the *Direct Input Mode* (switch in front with letters *D* and *X*, select *D*).
 
 Controls:
- * `RB` - manipulator dead man's switch \
- * `LB` - ROSbot control dead man's switch (with this button pressed you can control ROSbot XL, for specific command please refer to documentation of [joy2twist node](https://github.com/husarion/joy2twist)) \
- * `Start` - move manipulator to Home position \
- * `Left Joy` - moving end effector in X/Y directions \
- * `Right Joy` - moving end effector in Z direction (Up/Down) and changing Pitch angle (Left/Right) \
- * `Left/Right arrow` - moving joint1 of manipulator \
- * `Up/Down arrow` - moving joint2 of manipulator \
- * `X/B button` - moving joint3 of manipulator \
- * `Y/A` - moving joint4 of manipulator \
- * `RT` - close gripper \
+ * `RB` - manipulator's dead man's switch
+ * `LB` - ROSbot control dead man's switch (with this button pressed you can control ROSbot XL, for specific commands please refer to the documentation of the [joy2twist node](https://github.com/husarion/joy2twist))
+ * `Start` - return the manipulator to the Home position
+ * `Left Joy` - moving end effector in X/Y directions
+ * `Right Joy` - moving end effector in the Z direction (Up/Down) and changing Pitch angle (Left/Right)
+ * `Left/Right arrow` - moving joint1 of the manipulator
+ * `Up/Down arrow` - moving joint2 of the manipulator
+ * `X/B button` - moving joint3 of the manipulator
+ * `Y/A` - moving joint4 of the manipulator 
+ * `RT` - close gripper
  * `LT` - open gripper
 
-If manipulator stops moving it could be that it is near collision (may not appear so, because collision bounds are larger than robot) or singularity. If that happens the easiest option is to press `Start` so that manipulator will return to Home position.
+If the manipulator stops moving it could be near collision (may not appear so, because collision bounds are larger than the robot) or singularity. If that happens the easiest option is to press `Start` so that the manipulator will return to the Home position.
 
-Apart from joystick, it is also possible to control manipulator using MoveIt MotionPlanning plugin in the RViz. 
+Apart from a gamepad, it is also possible to control the manipulator using MoveIt's *MotionPlanning* plugin in the RViz. 
 
-Torque of the manipulator can be turned off by executing following service call in one of the containers:
+The torque of the manipulator can be turned off by executing the following service call in one of the containers:
 ```
-ros2 service call /controller_manager/set_hardware_component_state controller_manager_msgs/srv/SetHardwareComponentState "{name: 'manipulator', target_state: {id: 0, label: 'inactive'}}"
+ros2 service call /controller_manager/set_hardware_component_state \
+  controller_manager_msgs/srv/SetHardwareComponentState \
+  "{name: 'manipulator', target_state: {id: 0, label: 'inactive'}}"
 ```
-Later it can be turned on likewise, only labal should be changed to `active`.
+
+It is not recommended to later turn it on using service, as the last commanded position is remembered and the manipulator will attempt to return to it upon enabling torque. Instead you should restart the container.
 
 ## Quick Start (Gazebo simulation)
 
@@ -102,7 +110,7 @@ Later it can be turned on likewise, only labal should be changed to `active`.
 >
 > The `compose.sim.nvidia.yaml` file uses NVIDIA Container Runtime. Make sure you have NVIDIA GPU and the [NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html) installed.
 >
-> It is also possible to run simulation without NVIDIA GPU - use `compose.sim.yaml` file instead, but please note that performance won't be too good, that's why nvidia configuration is recomended.
+> It is also possible to run the simulation without NVIDIA GPU - use the `compose.sim.yaml` file instead, but please note that performance won't be too good, that's why Nvidia configuration is recommended.
 
 Start the containers in a new terminal:
 
@@ -111,5 +119,6 @@ xhost +local:docker && \
 docker compose -f compose.sim.nvidia.yaml up
 ```
 
-> Collision for manipulator is disabled in Gazebo Ignition - there aren't any collision models available for OpenManipulatorX, in the official configuration visual meshes are used also for collision, which causes large drop in real time factor of the simulation.
-> In simulation servo position control is used instead of velocity (due to bug, which causes manipulator to fall down just after start). As a result homing manipulator from joy_servo isn't supported.
+> Collision for the manipulator is disabled in Gazebo Ignition - there aren't any collision models available for OpenManipulatorX, in the official configuration visual meshes are used also for collision, which causes a large drop in the real-time factor of the simulation.
+
+> In simulation servo position control is used instead of velocity (due to a bug, which causes the manipulator to fall just after start). As a result homing manipulator from joy_servo isn't supported.

@@ -4,7 +4,7 @@
 
 services:
   rosbot-xl:
-    image: husarion/rosbot-xl-manipulation-gazebo:humble-open_manipulator_x
+    image: husarion/rosbot-xl-manipulation-gazebo:humble
     container_name: rosbot_xl_manipulation_simulation
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix

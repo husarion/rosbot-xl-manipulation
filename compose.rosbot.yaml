@@ -1,14 +1,13 @@
 services:
   rosbot-xl:
-    image: husarion/rosbot-xl-manipulation:humble-open_manipulator_x
+    image: husarion/rosbot-xl-manipulation:humble
     network_mode: host
     ipc: host
     devices:
       - ${MANIPULATOR_SERIAL:?err}:/dev/manipulator
     volumes: 
       - ./config/joy_servo.yaml:/joy_servo.yaml
-      - ./config/rosbot_xl_manipulation.srdf:/ros2_ws/install/rosbot_xl_manipulation_moveit/share/rosbot_xl_manipulation_moveit/config/rosbot_xl_manipulation.srdf
-      - ./config/servo.yaml:/ros2_ws/install/rosbot_xl_manipulation_moveit/share/rosbot_xl_manipulation_moveit/config/servo.yaml
+      - ./config/joint_limits.yaml:/ros2_ws/install/rosbot_xl_manipulation_moveit/share/rosbot_xl_manipulation_moveit/config/joint_limits.yaml
     environment:
       - DDS_CONFIG
       - RMW_IMPLEMENTATION
@@ -17,6 +16,7 @@ services:
         manipulator_usb_port:=/dev/manipulator
         manipulator_baud_rate:=${MANIPULATOR_BAUDRATE:-115200}
         joy_servo_params_file:=/joy_servo.yaml
+        antenna_rotation_angle:=-1.57
 
   microros:
     image: husarion/micro-ros-agent:humble-3.1.2-20230204-stable

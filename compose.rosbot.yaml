@@ -11,11 +11,12 @@ services:
       - DDS_CONFIG
       - RMW_IMPLEMENTATION
     command: >
-      ros2 launch rosbot_xl_manipulation_bringup bringup.launch.py mecanum:=${MECANUM:-True}
+      ros2 launch rosbot_xl_manipulation_bringup bringup.launch.py
+        mecanum:=${MECANUM:-True}
         manipulator_usb_port:=/dev/manipulator
         manipulator_baud_rate:=${MANIPULATOR_BAUDRATE:-115200}
         joy_servo_params_file:=/joy_servo.yaml
-        antenna_rotation_angle:=-1.57
+        antenna_rotation_angle:=${ANTENNA_ROTATION_ANGLE:- -1.57}
 
   microros:
     image: husarion/micro-ros-agent:humble-3.1.2-20230204-stable

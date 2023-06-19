@@ -57,8 +57,9 @@ docker compose -f compose.pc.yaml up
 >
 > ```
 > docker run --rm -it --privileged \
-> husarion/rosbot-xl-manipulation:humble \
-> flash-firmware.py -p /dev/ttyUSB0
+> --mount type=bind,source=/dev/ttyUSBDB,target=/dev/ttyUSBDB \
+> husarion/rosbot-xl:humble \
+> flash-firmware.py -p /dev/ttyUSBDB
 > ```
 
 > **Warning**

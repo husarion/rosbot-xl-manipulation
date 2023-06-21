@@ -7,7 +7,7 @@ In this project you can find an example integration of ROSbot XL with [OpenManip
 This repository contains the Docker Compose setup for both PC and ROSbot XL. You can clone it to both PC and ROSbot XL, or use the `./sync_with_rosbot.sh` script to clone it to your PC and keep it synchronized with the robot
 
 ```bash
-git https://github.com/husarion/rosbot-xl-manipulation.git
+git clone https://github.com/husarion/rosbot-xl-manipulation.git
 cd rosbot-xl-manipulation 
 export ROSBOT_ADDR=10.5.10.123 # Replace with your own ROSbot's IP or Husarnet hostname
 ./sync_with_rosbot.sh $ROSBOT_ADDR

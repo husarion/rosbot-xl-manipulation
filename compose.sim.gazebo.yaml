@@ -15,12 +15,6 @@ x-gpu-config:
     - NVIDIA_VISIBLE_DEVICES=all
     - NVIDIA_DRIVER_CAPABILITIES=all
 
-x-cpu-config:
-  &cpu-config
-  environment:
-    - DISPLAY=${DISPLAY:?err}
-    - LIBGL_ALWAYS_SOFTWARE=1
-
 services:
   rosbot-xl:
     image: husarion/rosbot-xl-manipulation-gazebo:humble

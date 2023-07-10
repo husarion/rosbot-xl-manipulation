@@ -126,6 +126,8 @@ Controls:
  * `RT` - close gripper
  * `LT` - open gripper
 
+The cartesian coordinate frame was defined to be in the `link2` - that's why the Y direction is actually yaw rotation.
+
 If the manipulator stops moving it could be near collision (may not appear so, because collision bounds are larger than the robot) or singularity. If that happens the easiest option is to press `Start` so that the manipulator will return to the Home position.
 
 Apart from a gamepad, it is also possible to control the manipulator using MoveIt's *MotionPlanning* plugin in the RViz. 
@@ -144,7 +146,6 @@ It is not recommended to later turn it on using service, as the last commanded p
 > **Prerequisites**
 >
 > The `compose.sim.gazebo.yaml` file uses NVIDIA Container Runtime. Make sure you have NVIDIA GPU and the [NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html) installed.
-> It is also possible to run the simulation without NVIDIA GPU - change the `gpu-config` references to `cpu-config` in the `compose.sim.gazebo.yaml` file, but please note that performance won't be too good, that's why Nvidia configuration is recommended.
 
 Start the containers in a new terminal:
 

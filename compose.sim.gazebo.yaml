@@ -5,7 +5,6 @@ x-net-config:
   &net-config
   network_mode: host
   ipc: host
-  env_file: net.env
 
 x-gpu-config:
   &gpu-config
@@ -27,14 +26,14 @@ services:
       ros2 launch rosbot_xl_manipulation_gazebo simulation.launch.py
         mecanum:=${MECANUM:-True}
         antenna_rotation_angle:=${ANTENNA_ROTATION_ANGLE:- -1.57}
-  
+
   joy2twist:
     image: husarion/joy2twist:humble-1.0.0-20230204-stable
     <<: *net-config
     devices:
       - /dev/input
-    volumes: 
+    volumes:
       - ./config/joy2twist.yaml:/joy2twist.yaml
-    command: > 
+    command: >
       ros2 launch joy2twist gamepad_controller.launch.py
         joy2twist_params_file:=/joy2twist.yaml

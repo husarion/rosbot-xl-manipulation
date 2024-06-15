@@ -2,6 +2,15 @@
 
 In this project you can find an example integration of ROSbot XL with [OpenManipulatorX](https://emanual.robotis.com/docs/en/platform/openmanipulator_x/overview/) based on [MoveIt2](https://moveit.picknik.ai/humble/index.html). It includes [servo mode](https://moveit.picknik.ai/humble/doc/examples/realtime_servo/realtime_servo_tutorial.html) configuration, which allows controlling manipulator with a gamepad.
 
+> [!NOTE]
+> To simplify the execution of this project, we are utilizing [just](https://github.com/casey/just).
+>
+> Install it with:
+>
+> ```bash
+> curl --proto '=https' --tlsv1.2 -sSf https://just.systems/install.sh | sudo bash -s -- --to /usr/bin
+> ```
+
 ## Repository Setup
 
 This repository contains the Docker Compose setup for both PC and ROSbot XL. You can clone it to both PC and ROSbot XL, or use the `./sync_with_rosbot.sh` script to clone it to your PC and keep it synchronized with the robot
@@ -18,11 +27,7 @@ export ROSBOT_ADDR=10.5.10.123 # Replace with your own ROSbot's IP or Husarnet h
 To flash the Micro-ROS based firmware for STM32F4 microcontroller responisble for low-level functionalities of ROSbot XL, execute in the ROSbot's shell:
 
 ```bash
-docker stop rosbot-xl microros 2>/dev/null || true && \
-docker run --rm -it --privileged \
---mount type=bind,source=/dev/ttyUSBDB,target=/dev/ttyUSBDB \
-husarion/rosbot-xl-manipulation:humble \
-flash-firmware.py -p /dev/ttyUSBDB
+just flash
 ```
 
 ## Choosing the Network (DDS) Config
@@ -41,13 +46,13 @@ Edit `net.env` file and uncomment on of the configs:
 # RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
 
 # 3. Fast DDS + VPN
-# RMW_IMPLEMENTATION=rmw_fastrtps_cpp
-# FASTRTPS_DEFAULT_PROFILES_FILE=/husarnet-fastdds.xml
+RMW_IMPLEMENTATION=rmw_fastrtps_cpp
+FASTRTPS_DEFAULT_PROFILES_FILE=/husarnet-fastdds.xml
 
 # 4. Cyclone DDS + VPN
-RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
-FASTRTPS_DEFAULT_PROFILES_FILE=/husarnet-fastdds.xml
-CYCLONEDDS_URI=file:///husarnet-cyclonedds.xml
+# RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
+# FASTRTPS_DEFAULT_PROFILES_FILE=/husarnet-fastdds.xml
+# CYCLONEDDS_URI=file:///husarnet-cyclonedds.xml
 ```
 
 > **VPN connection**
@@ -89,8 +94,7 @@ The default options should be suitable.
 First connect a gamepad to the USB port of your PC/laptop, open a new terminal on the PC and run: 
 
 ```bash
-xhost +local:docker && \
-docker compose -f compose.pc.yaml up
+just pc
 ```
 
 ### ROSbot
@@ -104,7 +108,7 @@ docker compose -f compose.pc.yaml up
 In the ROSbot's terminal execute (in `/home/husarion/rosbot-xl-manipulation` directory):
 
 ```bash
-docker compose -f compose.rosbot.yaml up
+just rosbot
 ```
 
 ### Manipulator control

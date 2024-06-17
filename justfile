@@ -56,6 +56,24 @@ start-rosbot: _run-as-user
     docker compose pull
     docker compose up
 
+# Make the arm of ROSbot XL loose/inactive(use it only when the robot is something is holding the arm)
+arm-power-off:
+    #!/bin/bash
+    docker compose exec rosbot /bin/bash -c \
+        "/ros_entrypoint.sh \
+        ros2 service call /controller_manager/set_hardware_component_state \
+            controller_manager_msgs/srv/SetHardwareComponentState \
+            \"{name: 'manipulator', target_state: {id: 0, label: 'inactive'}}\""
+
+# Make the arm of ROSbot XL active 
+arm-power-on:
+    #!/bin/bash
+    docker compose exec rosbot /bin/bash -c \
+        "/ros_entrypoint.sh \
+        ros2 service call /controller_manager/set_hardware_component_state \
+            controller_manager_msgs/srv/SetHardwareComponentState \
+            \"{name: 'manipulator', target_state: {id: 0, label: 'active'}}\""
+
 # start containers on PC
 start-pc: _run-as-user
     #!/bin/bash

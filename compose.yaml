@@ -7,6 +7,7 @@ x-net-config:
 services:
   rosbot:
     image: husarion/rosbot-xl-manipulation:humble-1.1.2-20240516
+    container_name: rosbot_xl_manipulation
     <<: *net-config
     devices:
       - ${MANIPULATOR_SERIAL:?err}:/dev/manipulator
